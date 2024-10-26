@@ -59,3 +59,19 @@ int ThreadPool::get_free_thread_count(){
     std::unique_lock<std::mutex> lock(m_var_mtx);
     return m_threads_vec.size() - m_busy_thread_count;
 }
+
+void ThreadPool::set_to_kill_count(int count) {
+    std::unique_lock<std::mutex> out_lock(m_to_kill_count_mtx);
+    {
+        std::unique_lock<std::mutex> in_lock(m_var_mtx);
+        if(m_threads_vec.size() - count < m_min_t){
+            count = m_threads_vec.size() - m_min_t;
+        }
+    }
+    m_to_kill_count = count;
+}
+
+int ThreadPool::get_to_kill_count() {
+    std::unique_lock<std::mutex> lock(m_to_kill_count_mtx);
+    return m_to_kill_count;
+}

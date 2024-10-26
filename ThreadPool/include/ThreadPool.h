@@ -13,8 +13,11 @@
 #include "thread"
 #include "memory"
 #include "mutex"
+#include "IThreadPoolControl.h"
+#include "IThreadPoolManager.h"
+#include "ThreadPoolManager.h"
 
-class ThreadPool: public IThreadPool, public IThreadPoolInfo{
+class ThreadPool: public IThreadPool, public IThreadPoolInfo, public IThreadPoolControl{
 public:
     ThreadPool(int min_t, int max_t, int max_task_count): m_min_t(min_t)
     , m_max_t(max_t)
@@ -23,8 +26,9 @@ public:
     , m_threads_vec(0)
     , m_run_flag(false)
     , m_stop_flag(false)
-    , m_task_queue(std::make_shared<TaskQueue>(max_task_count))
-    , m_to_kill_count(0) {};
+    , m_task_queue(new TaskQueue(max_task_count))
+    , m_to_kill_count(0)
+    , m_thread_pool_manager(new ThreadPoolManager(this, m_task_queue.get())){};
     ~ThreadPool() override = default;
     void start() override;
     void stop() override;
@@ -32,6 +36,8 @@ public:
     void add_task(std::function<void ()> task) override;
     int get_max_thread_count() override;
     int get_free_thread_count() override;
+    void set_to_kill_count(int count) override;
+    int get_to_kill_count();
 private:
     int m_min_t;
     int m_max_t;
@@ -44,6 +50,7 @@ private:
     std::shared_ptr<ITaskQueue> m_task_queue;
     int m_to_kill_count;
     std::mutex m_to_kill_count_mtx;
+    std::shared_ptr<IThreadPoolManager> m_thread_pool_manager;
 };
 
 #endif //LKTHREADPOOL_THREADPOOL_H
