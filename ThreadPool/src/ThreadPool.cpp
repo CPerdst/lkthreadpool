@@ -2,8 +2,21 @@
 // Created by banser on 24-10-26.
 //
 
-#include "../include/ThreadPool.h"
 #include "iostream"
+#include "ThreadPool.h"
+#include "ThreadPoolManager.h"
+
+ThreadPool::ThreadPool(int min_t, int max_t, int max_task_count)
+    : m_min_t(min_t),
+      m_max_t(max_t),
+      m_max_task_count(max_task_count),
+      m_busy_thread_count(0),
+      m_threads_vec(),
+      m_run_flag(false),
+      m_stop_flag(false),
+      m_task_queue(std::make_shared<TaskQueue>(max_task_count)),
+      m_to_kill_count(0),
+      m_thread_pool_manager(std::make_shared<ThreadPoolManager>(this, dynamic_cast<TaskQueue*>(m_task_queue.get()))) {}
 
 void ThreadPool::start(){
     if(!m_threads_vec.empty()){
@@ -36,6 +49,7 @@ void ThreadPool::start(){
         t.detach();
         m_threads_vec.push_back(std::move(t));
     }
+    m_thread_pool_manager->start();
 }
 
 void ThreadPool::stop(){

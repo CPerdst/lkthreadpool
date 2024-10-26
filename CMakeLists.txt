@@ -2,20 +2,21 @@ cmake_minimum_required(VERSION 3.29)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(OPTION 3)
+set(OPTION 1)
 
 file(GLOB LKTPSOURCES "./TaskQueue/src/*.cpp" "./ThreadPool/src/*.cpp")
 file(GLOB LKTPHEADERS "./TaskQueue/include/*.h" "./ThreadPool/include/*.h")
 
 if(OPTION EQUAL 1)
     project(lkthreadpool)
-    add_executable(lkthreadpool main.cpp ./ThreadPool/src/ThreadPool.cpp ./TaskQueue/src/TaskQueue.cpp)
+    add_executable(lkthreadpool main.cpp ${LKTPSOURCES} ${LKTPHEADERS})
     target_include_directories(lkthreadpool PRIVATE ./ThreadPool/include)
     target_include_directories(lkthreadpool PRIVATE ./TaskQueue/include)
     target_link_libraries(lkthreadpool PRIVATE pthread)
 elseif (OPTION EQUAL 2)
     project(lkthreadpool)
-    add_library(lkthreadpool SHARED ${LKTPSOURCES} ${LKTPHEADERS})
+    add_library(lkthreadpool SHARED ${LKTPSOURCES} ${LKTPHEADERS}
+            ThreadPool/include/ThreadPoolManager.h)
     target_include_directories(lkthreadpool PRIVATE ./ThreadPool/include ./TaskQueue/include)
 elseif (OPTION EQUAL 3)
     project(lkthreadpooluselib)

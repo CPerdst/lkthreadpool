@@ -15,20 +15,13 @@
 #include "mutex"
 #include "IThreadPoolControl.h"
 #include "IThreadPoolManager.h"
-#include "ThreadPoolManager.h"
+// #include "ThreadPoolManager.h"
+
+class ThreadPoolManager; // 添加前向声明
 
 class ThreadPool: public IThreadPool, public IThreadPoolInfo, public IThreadPoolControl{
 public:
-    ThreadPool(int min_t, int max_t, int max_task_count): m_min_t(min_t)
-    , m_max_t(max_t)
-    , m_max_task_count(max_task_count)
-    , m_busy_thread_count(0)
-    , m_threads_vec(0)
-    , m_run_flag(false)
-    , m_stop_flag(false)
-    , m_task_queue(new TaskQueue(max_task_count))
-    , m_to_kill_count(0)
-    , m_thread_pool_manager(new ThreadPoolManager(this, m_task_queue.get())){};
+    ThreadPool(int min_t, int max_t, int max_task_count);
     ~ThreadPool() override = default;
     void start() override;
     void stop() override;

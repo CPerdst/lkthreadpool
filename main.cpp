@@ -10,7 +10,7 @@ int main() {
     std::mutex mtx;
     int count = 0;
     t->start();
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 1; i++){
         t->add_task([&](){
             std::unique_lock<std::mutex> lock(mtx);
             std::cout << count++ << std::endl;

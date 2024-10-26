@@ -9,10 +9,15 @@
 #include "IThreadPoolInfo.h"
 #include "IThreadPoolControl.h"
 #include "ITaskQueueInfo.h"
-#include "TaskQueue.h"
-#include "iostream"
+#include "functional"
+#include "thread"
+#include "memory"
+// #include "TaskQueue.h"
+// #include "iostream"
 
-class ThreadPool;
+class TaskQueue; // 添加前向声明
+
+//class ThreadPool;
 
 class Timer{
 public:
@@ -28,7 +33,7 @@ public:
                 if(m_exit_flag){
                     break;
                 }
-                callback();
+                m_callback();
                 std::this_thread::sleep_for(std::chrono::milliseconds(m_milliseconds));
             }
         }).detach();
@@ -51,13 +56,8 @@ private:
 
 class ThreadPoolManager: public IThreadPoolManager{
 public:
-    ThreadPoolManager(ThreadPool* ptr, const TaskQueue* ptr2): m_p_thread_pool_info(ptr)
-    , mp_thread_pool_control(ptr)
-    , m_p_tasks_queue_info(ptr2)
-    , m_timer(new Timer(1000, [&](){
-        std::cout << "Timer CallBack" << std::endl;
-    })){};
-    ~ThreadPoolManager() = default;
+    ThreadPoolManager(IThreadPoolInfo* ptr, const ITaskQueueInfo* ptr2);
+    ~ThreadPoolManager() override = default;
     void start() override;
 private:
     IThreadPoolInfo* m_p_thread_pool_info;
