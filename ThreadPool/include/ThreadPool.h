@@ -28,9 +28,13 @@ public:
     void exit() override;
     void add_task(std::function<void ()> task) override;
     int get_max_thread_count() override;
+    int get_min_thread_count() override;
     int get_free_thread_count() override;
+    int get_cur_thread_count() override;
+    int get_busy_thread_count() override;
     void set_to_kill_count(int count) override;
-    int get_to_kill_count();
+    void create_thread(int count) override;
+    int get_to_kill_count() override;
 private:
     int m_min_t;
     int m_max_t;

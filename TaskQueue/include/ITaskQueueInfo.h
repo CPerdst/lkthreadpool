@@ -8,8 +8,9 @@
 class ITaskQueueInfo{
 public:
     ITaskQueueInfo() = default;
-    ~ITaskQueueInfo() = default;
-    virtual int task_count() = 0;
+    virtual ~ITaskQueueInfo() = default;
+    virtual int task_count() const = 0;
+    virtual int max_task_count() const = 0;
 };
 
 #endif //LKTHREADPOOL_ITASKQUEUEINFO_H

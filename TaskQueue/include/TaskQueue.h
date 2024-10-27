@@ -10,14 +10,19 @@
 #include "mutex"
 #include "condition_variable"
 #include "queue"
+#include "ITaskQueueControl.h"
+#include "IThreadPoolInfo.h"
 
-class TaskQueue: public ITaskQueue, public ITaskQueueInfo{
+class TaskQueue: public ITaskQueue, public ITaskQueueInfo, public ITaskQueueControl{
 public:
-    TaskQueue(int max_task_count = 10000): m_max_task_count(max_task_count) {};
-    ~TaskQueue() = default;
+    explicit TaskQueue(int max_task_count = 10000): m_max_task_count(max_task_count) {};
+    ~TaskQueue() override = default;
     void add_task(std::function<void(void)> task) override;
-    std::function<void(void)> get_task() override;
-    int task_count() override;
+    std::function<void(void)> get_task(IThreadPoolInfo* pThis, int& err) override;
+    [[nodiscard]] int task_count() const override;
+    [[nodiscard]] int max_task_count() const override;
+    void not_empty_notify_one() override;
+    void not_full_notify_one() override;
 private:
     int m_max_task_count;
     std::mutex m_mtx;

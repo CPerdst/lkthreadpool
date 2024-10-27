@@ -10,6 +10,7 @@ public:
     IThreadPoolControl() = default;
     virtual ~IThreadPoolControl() = default;
     virtual void set_to_kill_count(int count) = 0;
+    virtual void create_thread(int count) = 0;
 };
 
 #endif //LKTHREADPOOLUSELIB_ITHREADPOOLCONTROL_H

@@ -9,6 +9,7 @@
 #include "IThreadPoolInfo.h"
 #include "IThreadPoolControl.h"
 #include "ITaskQueueInfo.h"
+#include "ITaskQueueControl.h"
 #include "functional"
 #include "thread"
 #include "memory"
@@ -54,16 +55,17 @@ private:
     std::function<void(void)> m_callback;
 };
 
-class ThreadPoolManager: public IThreadPoolManager{
+class ThreadPoolManager final : public IThreadPoolManager{
 public:
-    ThreadPoolManager(IThreadPoolInfo* ptr, const ITaskQueueInfo* ptr2);
+    ThreadPoolManager(IThreadPoolInfo* ptr, ITaskQueueInfo* ptr2);
     ~ThreadPoolManager() override = default;
     void start() override;
 private:
     IThreadPoolInfo* m_p_thread_pool_info;
     IThreadPoolControl* m_p_thread_pool_control;
-    const ITaskQueueInfo* m_p_tasks_queue_info;
+    ITaskQueueInfo* m_p_tasks_queue_info;
     std::shared_ptr<Timer> m_timer;
+    ITaskQueueControl* m_p_tasks_queue_control;
 };
 
 

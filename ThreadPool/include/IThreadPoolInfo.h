@@ -10,7 +10,12 @@ public:
     IThreadPoolInfo() = default;
     virtual ~IThreadPoolInfo() = default;
     virtual int get_max_thread_count() = 0;
+    virtual int get_min_thread_count() = 0;
     virtual int get_free_thread_count() = 0;
+    virtual int get_cur_thread_count() = 0;
+    virtual int get_busy_thread_count() = 0;
+    virtual int get_to_kill_count() = 0;
+
 };
 
 #endif //LKTHREADPOOL_ITHREADPOOLINFO_H
